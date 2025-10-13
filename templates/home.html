@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Student Portal{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="text-align: center; font-size:32px; margin-top:35px;">Welcome to the Student Portal</h1>
+    <p class="text">Manage student registrations and course information with ease. Navigate using the links above to view students, manage courses, or register a new student.</p>
+    <div>
+        <a href="{{ url_for('students') }}" class="btn btn-primary" style="margin-right:10px;">View Students</a>
+        <a href="{{ url_for('register') }}" class="btn btn-secondary">Register a Student</a>
+    </div>
+</div>
+{% endblock %}
