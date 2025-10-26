@@ -11,13 +11,62 @@ db_config = {
     'cursorclass': pymysql.cursors.DictCursor
 }
 
+from flask import Flask, render_template, request, redirect, url_for
+import pymysql
+
+app = Flask(__name__)
+
+db_config = {
+    'host': 'StudentsPortal.mysql.pythonanywhere-services.com',
+    'user': 'StudentsPortal',
+    'password': 'Praveen@2004',
+    'database': 'StudentsPortal$default',
+    'cursorclass': pymysql.cursors.DictCursor
+}
+
 def get_db_connection():
     return pymysql.connect(**db_config)
+
+def db_init():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS courses (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            course_name VARCHAR(100) NOT NULL
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            course VARCHAR(50) NOT NULL
+        )
+    """)
+
+    cursor.execute("SELECT COUNT(*) AS count FROM courses")
+    count = cursor.fetchone()['count']
+    if count == 0:
+        cursor.executemany(
+            "INSERT INTO courses (course_name) VALUES (%s)",
+            [
+                ('Python Full Stack',),
+                ('Data Science',),
+                ('Machine Learning',),
+                ('Web Development',)
+            ]
+        )
+
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 @app.route('/')
 def home():
     return render_template('home.html')
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -44,7 +93,6 @@ def register():
     conn.close()
     return render_template('register.html', courses=courses)
 
-
 @app.route('/students')
 def students():
     conn = get_db_connection()
@@ -55,7 +103,6 @@ def students():
     conn.close()
     return render_template('students.html', students=students)
 
-
 @app.route('/courses')
 def courses():
     conn = get_db_connection()
@@ -65,7 +112,6 @@ def courses():
     cursor.close()
     conn.close()
     return render_template('courses.html', courses=courses)
-
 
 @app.route('/add_course', methods=['GET', 'POST'])
 def add_course():
@@ -83,6 +129,6 @@ def add_course():
 
     return render_template('add_course.html')
 
-
 if __name__ == '__main__':
+    db_init()
     app.run(debug=True)
