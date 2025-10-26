@@ -11,19 +11,6 @@ db_config = {
     'cursorclass': pymysql.cursors.DictCursor
 }
 
-from flask import Flask, render_template, request, redirect, url_for
-import pymysql
-
-app = Flask(__name__)
-
-db_config = {
-    'host': 'StudentsPortal.mysql.pythonanywhere-services.com',
-    'user': 'StudentsPortal',
-    'password': 'Praveen@2004',
-    'database': 'StudentsPortal$default',
-    'cursorclass': pymysql.cursors.DictCursor
-}
-
 def get_db_connection():
     return pymysql.connect(**db_config)
 
