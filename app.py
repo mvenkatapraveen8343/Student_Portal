@@ -12,11 +12,8 @@ db_config = {
 }
 
 def get_db_connection():
-    """Return a MySQL connection."""
     return pymysql.connect(**db_config)
 
-
-# --- ROUTES ---
 @app.route('/')
 def home():
     return render_template('home.html')
